@@ -45,6 +45,12 @@ export default function ContactForm() {
     setStatus('submitting');
     setErrorMessage(null);
 
+    if (!supabase) {
+      setErrorMessage('Online messages are temporarily unavailable. Please contact the temple office directly.');
+      setStatus('error');
+      return;
+    }
+
     const { error } = await supabase.from('contact_messages').insert({
       name: values.name.trim(),
       email: values.email.trim(),
