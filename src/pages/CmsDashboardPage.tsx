@@ -220,8 +220,7 @@ export default function CmsDashboardPage() {
   const [galleryForm, setGalleryForm] = useState<CmsGalleryImage[]>(getGalleryImages);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginUsername, setLoginUsername] = useState(CMS_EMAIL);
-  const [loginOtp, setLoginOtp] = useState('');
-  const [otpSent, setOtpSent] = useState(false);
+  const [loginLinkSent, setLoginLinkSent] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   useEffect(() => {
@@ -439,33 +438,25 @@ export default function CmsDashboardPage() {
       return;
     }
     setLoginError('');
-    if (!otpSent) {
-      const { error } = await supabase.auth.signInWithOtp({
-        email: loginUsername,
-        options: { shouldCreateUser: true },
-      });
-      if (error) {
-        setLoginError(error.message);
-        return;
-      }
-      setOtpSent(true);
-      return;
-    }
-    const { error } = await supabase.auth.verifyOtp({ email: loginUsername, token: loginOtp, type: 'email' });
+    const { error } = await supabase.auth.signInWithOtp({
+      email: loginUsername,
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: `${window.location.origin}/?cms=1`,
+      },
+    });
     if (error) {
       setLoginError(error.message);
       return;
     }
-    setIsAuthenticated(true);
-    setLoginError('');
+    setLoginLinkSent(true);
   };
 
   const handleLogout = () => {
     void supabase?.auth.signOut();
     setIsAuthenticated(false);
     setLoginUsername(CMS_EMAIL);
-    setLoginOtp('');
-    setOtpSent(false);
+    setLoginLinkSent(false);
   };
 
   if (!isAuthenticated) {
@@ -479,10 +470,9 @@ export default function CmsDashboardPage() {
           </div>
           <form onSubmit={handleLogin} className="space-y-5">
             <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">CMS email</span><input type="email" value={loginUsername} readOnly autoComplete="email" required className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none" /></label>
-            {otpSent && <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">Verification code</span><input inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={loginOtp} onChange={(event) => setLoginOtp(event.target.value.replace(/\D/g, ''))} autoComplete="one-time-code" required className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm tracking-[0.35em] outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" /></label>}
+            {loginLinkSent && <p className="rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">Check your inbox and click the secure login link.</p>}
             {loginError && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{loginError}</p>}
-            <button type="submit" className="w-full rounded-xl bg-primary-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800">{otpSent ? 'Verify code' : 'Send login code'}</button>
-            {otpSent && <button type="button" onClick={() => { setOtpSent(false); setLoginOtp(''); setLoginError(''); }} className="w-full rounded-xl px-5 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-100">Send a new code</button>}
+            <button type="submit" className="w-full rounded-xl bg-primary-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800">{loginLinkSent ? 'Resend login link' : 'Send login link'}</button>
           </form>
           <a href="#/" className="mt-6 block text-center text-sm font-semibold text-slate-500 hover:text-primary-700">Return to website</a>
         </div>

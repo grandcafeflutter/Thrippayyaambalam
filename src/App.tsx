@@ -12,6 +12,7 @@ import PoojaPage from '@/pages/PoojaPage';
 import WorshipPage from '@/pages/WorshipPage';
 import CmsDashboardPage from '@/pages/CmsDashboardPage';
 import { hydrateCmsContent } from '@/lib/cmsBackend';
+import { supabase } from '@/lib/supabase';
 
 const PAGES: Record<string, ComponentType> = {
   '/': HomePage,
@@ -45,6 +46,16 @@ export default function App() {
 
   useEffect(() => {
     void hydrateCmsContent().finally(() => setCmsReady(true));
+  }, []);
+
+  useEffect(() => {
+    const isCmsRedirect = new URLSearchParams(window.location.search).get('cms') === '1';
+    if (!isCmsRedirect || !supabase) return;
+    void supabase.auth.getSession().then(({ data }) => {
+      if (!data.session) return;
+      window.history.replaceState({}, document.title, window.location.pathname);
+      window.location.hash = '/cms';
+    });
   }, []);
 
   useEffect(() => {
