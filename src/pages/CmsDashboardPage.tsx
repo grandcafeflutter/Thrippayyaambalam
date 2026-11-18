@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowLeft,
   ArrowDown,
@@ -27,6 +27,8 @@ import { DEFAULT_HOME_HERO_IMAGES, getDarshanTimings, getFestivalCards, getFesti
 import type { PoojaRate } from '@/data/poojaRates';
 import type { FestivalCalendarEntry, FestivalHighlight } from '@/data/festivals';
 import { ADMINISTRATION_CONTENT_KEY, ADMINISTRATION_GROUPS, type AdministrationGroup, type Member } from '@/pages/AdministrationPage';
+import { saveCmsContent } from '@/lib/cmsBackend';
+import { supabase } from '@/lib/supabase';
 
 type Section = {
   id: string;
@@ -55,9 +57,7 @@ type HeroForm = {
 
 type QuickLinksForm = string[];
 
-const CMS_SESSION_KEY = 'temple-cms-authenticated';
-const CMS_USERNAME = 'Thrippayya2026';
-const CMS_PASSWORD = 'ijk2kdlr2026';
+const CMS_EMAIL = 'grandcafeadvertising@gmail.com';
 
 function compressHeroImage(file: File): Promise<string> {
   if (!file.type.startsWith('image/')) return Promise.reject(new Error('Choose a valid image file.'));
@@ -218,10 +218,16 @@ export default function CmsDashboardPage() {
   const [festivalTableForm, setFestivalTableForm] = useState<FestivalCalendarEntry[]>(getFestivalTable);
   const [festivalTableFormTitle, setFestivalTableFormTitle] = useState(getFestivalTableTitle);
   const [galleryForm, setGalleryForm] = useState<CmsGalleryImage[]>(getGalleryImages);
-  const [isAuthenticated, setIsAuthenticated] = useState(() => typeof window !== 'undefined' && window.sessionStorage.getItem(CMS_SESSION_KEY) === 'true');
-  const [loginUsername, setLoginUsername] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginUsername, setLoginUsername] = useState(CMS_EMAIL);
+  const [loginOtp, setLoginOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
   const [loginError, setLoginError] = useState('');
+
+  useEffect(() => {
+    if (!supabase) return;
+    void supabase.auth.getSession().then(({ data }) => setIsAuthenticated(Boolean(data.session)));
+  }, []);
 
   const selectedPage = pages.find((page) => page.id === selectedPageId) ?? pages[0];
   const filteredPages = useMemo(
@@ -240,7 +246,7 @@ export default function CmsDashboardPage() {
     setSelectedSection((section) => (section ? { ...section, [field]: value } : section));
   };
 
-  const saveSection = () => {
+  const saveSection = async () => {
     if (!selectedSection) return;
     if (selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0) {
       setSaveError('Wait for image processing to finish before saving.');
@@ -252,37 +258,37 @@ export default function CmsDashboardPage() {
         const legacyHeroImage = window.localStorage.getItem(HOME_HERO_IMAGE_KEY);
         if (legacyHeroImage) window.localStorage.removeItem(HOME_HERO_IMAGE_KEY);
         try {
-          window.localStorage.setItem(HOME_HERO_IMAGES_KEY, JSON.stringify(heroImages));
+          await saveCmsContent(HOME_HERO_IMAGES_KEY, heroImages);
         } catch (error) {
           if (legacyHeroImage) window.localStorage.setItem(HOME_HERO_IMAGE_KEY, legacyHeroImage);
           throw error;
         }
       }
       if (selectedPage.id === 'home' && selectedSection.id === 'quick-links') {
-        window.localStorage.setItem(HOME_QUICK_LINKS_KEY, JSON.stringify(quickLinksForm));
+        await saveCmsContent(HOME_QUICK_LINKS_KEY, quickLinksForm);
       }
       if (selectedPage.id === 'home' && selectedSection.id === 'darshan-timings') {
-        window.localStorage.setItem(DARSHAN_TIMINGS_KEY, JSON.stringify(timingsForm));
+        await saveCmsContent(DARSHAN_TIMINGS_KEY, timingsForm);
       }
       if (selectedPage.id === 'home' && selectedSection.id === 'upcoming-festivals') {
-        window.localStorage.setItem(HOME_FESTIVALS_KEY, JSON.stringify(festivalForm));
-        window.localStorage.setItem(HOME_FESTIVALS_TITLE_KEY, festivalTitle);
+        await saveCmsContent(HOME_FESTIVALS_KEY, festivalForm);
+        await saveCmsContent(HOME_FESTIVALS_TITLE_KEY, festivalTitle);
       }
       if (selectedPage.id === 'pooja' && selectedSection.id === 'pooja-rates') {
-        window.localStorage.setItem(POOJA_RATES_KEY, JSON.stringify(poojaRatesForm));
+        await saveCmsContent(POOJA_RATES_KEY, poojaRatesForm);
       }
       if (selectedPage.id === 'administration') {
-        window.localStorage.setItem(ADMINISTRATION_CONTENT_KEY, JSON.stringify(administrationForm));
+        await saveCmsContent(ADMINISTRATION_CONTENT_KEY, administrationForm);
       }
       if (selectedPage.id === 'festival' && selectedSection.id === 'festival-cards') {
-        window.localStorage.setItem(FESTIVAL_CARDS_KEY, JSON.stringify(festivalCardsForm));
+        await saveCmsContent(FESTIVAL_CARDS_KEY, festivalCardsForm);
       }
       if (selectedPage.id === 'festival' && selectedSection.id === 'festival-table') {
-        window.localStorage.setItem(FESTIVAL_TABLE_KEY, JSON.stringify(festivalTableForm));
-        window.localStorage.setItem(FESTIVAL_TABLE_TITLE_KEY, festivalTableFormTitle);
+        await saveCmsContent(FESTIVAL_TABLE_KEY, festivalTableForm);
+        await saveCmsContent(FESTIVAL_TABLE_TITLE_KEY, festivalTableFormTitle);
       }
       if (selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images') {
-        window.localStorage.setItem(GALLERY_IMAGES_KEY, JSON.stringify(galleryForm));
+        await saveCmsContent(GALLERY_IMAGES_KEY, galleryForm);
       }
     } catch (error) {
       console.error('Could not save CMS section.', error);
@@ -426,22 +432,40 @@ export default function CmsDashboardPage() {
     setGalleryForm((current) => current.map((image, currentIndex) => currentIndex === index ? { ...image, [field]: value } : image));
   };
 
-  const handleLogin = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (loginUsername === CMS_USERNAME && loginPassword === CMS_PASSWORD) {
-      window.sessionStorage.setItem(CMS_SESSION_KEY, 'true');
-      setIsAuthenticated(true);
-      setLoginError('');
+    if (!supabase) {
+      setLoginError('Supabase is not configured. Check the environment variables.');
       return;
     }
-    setLoginError('Incorrect username or password.');
+    setLoginError('');
+    if (!otpSent) {
+      const { error } = await supabase.auth.signInWithOtp({
+        email: loginUsername,
+        options: { shouldCreateUser: true },
+      });
+      if (error) {
+        setLoginError(error.message);
+        return;
+      }
+      setOtpSent(true);
+      return;
+    }
+    const { error } = await supabase.auth.verifyOtp({ email: loginUsername, token: loginOtp, type: 'email' });
+    if (error) {
+      setLoginError(error.message);
+      return;
+    }
+    setIsAuthenticated(true);
+    setLoginError('');
   };
 
   const handleLogout = () => {
-    window.sessionStorage.removeItem(CMS_SESSION_KEY);
+    void supabase?.auth.signOut();
     setIsAuthenticated(false);
-    setLoginUsername('');
-    setLoginPassword('');
+    setLoginUsername(CMS_EMAIL);
+    setLoginOtp('');
+    setOtpSent(false);
   };
 
   if (!isAuthenticated) {
@@ -454,10 +478,11 @@ export default function CmsDashboardPage() {
             <p className="mt-2 text-sm text-slate-500">Sign in to manage temple website content.</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-5">
-            <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">Username</span><input value={loginUsername} onChange={(event) => setLoginUsername(event.target.value)} autoComplete="username" required className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100" /></label>
-            <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">Password</span><input type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} autoComplete="current-password" required className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none transition focus:border-primary-500 focus:ring-2 focus:ring-primary-100" /></label>
+            <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">CMS email</span><input type="email" value={loginUsername} readOnly autoComplete="email" required className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none" /></label>
+            {otpSent && <label className="block"><span className="mb-2 block text-sm font-bold text-slate-700">Verification code</span><input inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={loginOtp} onChange={(event) => setLoginOtp(event.target.value.replace(/\D/g, ''))} autoComplete="one-time-code" required className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm tracking-[0.35em] outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" /></label>}
             {loginError && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{loginError}</p>}
-            <button type="submit" className="w-full rounded-xl bg-primary-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800">Sign in to CMS</button>
+            <button type="submit" className="w-full rounded-xl bg-primary-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800">{otpSent ? 'Verify code' : 'Send login code'}</button>
+            {otpSent && <button type="button" onClick={() => { setOtpSent(false); setLoginOtp(''); setLoginError(''); }} className="w-full rounded-xl px-5 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-100">Send a new code</button>}
           </form>
           <a href="#/" className="mt-6 block text-center text-sm font-semibold text-slate-500 hover:text-primary-700">Return to website</a>
         </div>

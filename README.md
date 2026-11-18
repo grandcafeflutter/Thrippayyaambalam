@@ -12,6 +12,23 @@ npm run dev
 
 Set the Supabase values in `.env` before using the contact form or CMS features.
 
+## Supabase CMS setup
+
+The project uses Supabase Auth for the CMS login, PostgreSQL for editable CMS
+content, and a public `site-media` Storage bucket for public temple images.
+
+1. In Supabase, open **SQL Editor** and run the migration in
+   `supabase/migrations/20261118090000_create_cms_content_and_media.sql`.
+2. In **Authentication → Users**, create the CMS user's email and password.
+3. Open `/#/cms` and sign in with that Supabase Auth email and password.
+
+The browser only uses the publishable/anon key from `.env`. Never put a
+`service_role` or secret key in a `VITE_` variable or in frontend code.
+
+Uploaded CMS images are stored in Supabase Storage and their public URLs are
+stored in the `cms_sections` table. Existing default content remains available
+as a fallback until a CMS section is saved.
+
 ## Deploy to Vercel
 
 Import this repository into Vercel with these settings:

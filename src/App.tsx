@@ -1,4 +1,4 @@
-import { useEffect, type ComponentType } from 'react';
+import { useEffect, useState, type ComponentType } from 'react';
 import SiteFooter from '@/components/SiteFooter';
 import SiteHeader from '@/components/SiteHeader';
 import { useHashPath } from '@/lib/router';
@@ -11,6 +11,7 @@ import HomePage from '@/pages/HomePage';
 import PoojaPage from '@/pages/PoojaPage';
 import WorshipPage from '@/pages/WorshipPage';
 import CmsDashboardPage from '@/pages/CmsDashboardPage';
+import { hydrateCmsContent } from '@/lib/cmsBackend';
 
 const PAGES: Record<string, ComponentType> = {
   '/': HomePage,
@@ -40,11 +41,19 @@ function NotFoundPage() {
 
 export default function App() {
   const path = useHashPath();
+  const [cmsReady, setCmsReady] = useState(false);
+
+  useEffect(() => {
+    void hydrateCmsContent().finally(() => setCmsReady(true));
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [path]);
 
+  if (!cmsReady) {
+    return <div className="flex min-h-screen items-center justify-center bg-neutral-50 text-sm text-neutral-600">Loading temple content...</div>;
+  }
   if (path === '/cms') {
     return <CmsDashboardPage />;
   }
