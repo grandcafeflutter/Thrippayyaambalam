@@ -180,7 +180,7 @@ export default function HomePage() {
             >
               <div className="relative min-h-44 overflow-hidden md:aspect-[16/10] md:min-h-0">
                 <img
-                  src={festival.image}
+                  src={content.image}
                   alt={content.title}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                 />
