@@ -45,8 +45,15 @@ export default function App() {
   const [cmsReady, setCmsReady] = useState(false);
 
   useEffect(() => {
-    void hydrateCmsContent().finally(() => setCmsReady(true));
-  }, []);
+    let active = true;
+    setCmsReady(false);
+    void hydrateCmsContent().finally(() => {
+      if (active) setCmsReady(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, [path]);
 
   useEffect(() => {
     const isCmsRedirect = new URLSearchParams(window.location.search).get('cms') === '1';
