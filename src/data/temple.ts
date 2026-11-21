@@ -192,7 +192,8 @@ export const ORDER_OF_WORSHIP_IMAGE =
   'https://images.pexels.com/photos/14647083/pexels-photo-14647083.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
 
 export const TEMPLE_CONTACT = {
-  address: 'Thrippayya, Kerala, India',
-  phone: '+91 00000 00000',
-  email: 'info@thrippayyatemple.org',
+  organization: 'SREE THRIPPAYYA KSHETHRA KSHEMA SAMITHY',
+  address: 'P.O. Nadavaramba, Irinjalakuda,\nTrichur - Dt., Kerala - 680 661',
+  phone: '9496816331',
+  email: 'thrippayyatemple@gmail.com',
 } as const;

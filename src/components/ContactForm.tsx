@@ -96,7 +96,7 @@ export default function ContactForm() {
           onChange={updateField('phone')}
           maxLength={30}
           autoComplete="tel"
-          placeholder="+91 00000 00000"
+          placeholder="9496816331"
         />
       </label>
 

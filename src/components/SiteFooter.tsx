@@ -33,10 +33,11 @@ export default function SiteFooter() {
 
         <div>
           <h3 className="mb-4 font-serif text-lg font-semibold text-secondary-300">Visit Us</h3>
+          <p className="mb-3 text-sm font-semibold text-primary-100">{TEMPLE_CONTACT.organization}</p>
           <ul className="space-y-3 text-sm">
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-secondary-400" />
-              <span>{TEMPLE_CONTACT.address}</span>
+              <span className="whitespace-pre-line">{TEMPLE_CONTACT.address}</span>
             </li>
             <li className="flex items-center gap-3">
               <Phone className="h-4 w-4 shrink-0 text-secondary-400" />
