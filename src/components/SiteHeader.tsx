@@ -21,7 +21,7 @@ export default function SiteHeader({ currentPath }: SiteHeaderProps) {
 
   return (
     <header className="sticky top-0 z-40 border-b-2 border-secondary-500 bg-gradient-to-r from-primary-800 via-primary-700 to-primary-800 shadow-lg">
-      <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-6 px-4 py-3 sm:px-6 lg:px-8">
         <a href="/" className="flex items-center gap-3" onClick={() => setMenuOpen(false)}>
           <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-neutral-50 p-1 shadow-md ring-2 ring-secondary-400">
             <img src="/images/image.png" alt="Temple emblem" className="h-full w-full object-contain" />

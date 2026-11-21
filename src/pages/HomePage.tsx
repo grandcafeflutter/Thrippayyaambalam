@@ -56,7 +56,7 @@ export default function HomePage() {
           />
         ))}
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-primary-900 via-primary-900/80 to-primary-900/10" />
-        <div className="relative z-10 mx-auto max-w-7xl px-4 pb-32 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pb-40">
+        <div className="relative z-10 mx-auto max-w-[1400px] px-4 pb-32 pt-20 sm:px-6 sm:pt-28 lg:px-8 lg:pb-40">
           <p className="animate-fade-up text-sm font-semibold uppercase tracking-[0.25em] text-secondary-300">
             Welcome to
           </p>
@@ -129,7 +129,7 @@ export default function HomePage() {
         )}
       </section>
 
-      <div className="mx-auto -mt-20 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto -mt-20 max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <nav aria-label="Quick links" className="grid grid-cols-2 gap-3 rounded-2xl border border-secondary-300 bg-neutral-50 p-3 shadow-xl sm:grid-cols-3 lg:grid-cols-5">
           {quickLinks.map((link) => (
             <a
@@ -146,7 +146,7 @@ export default function HomePage() {
         </nav>
       </div>
 
-      <section className="mx-auto mt-20 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto mt-20 max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.5fr_0.8fr]">
           <div className="grid overflow-hidden rounded-3xl border border-secondary-200 bg-neutral-50 shadow-md md:grid-cols-[1fr_1.2fr]">
             <img src={ABOUT_SECTION_IMAGE} alt="Thrippayya Thrimoorthi Temple" className="h-full min-h-72 w-full object-cover" />
@@ -169,7 +169,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto mt-24 max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <SectionHeading title={festivalTitle} />
         <div className="mt-10 grid gap-5 md:grid-cols-3">
           {FESTIVALS.map((festival, index) => {
@@ -204,7 +204,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto mt-16 max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="relative grid overflow-hidden rounded-2xl bg-primary-800 shadow-xl md:aspect-[3/1] md:grid-cols-[2fr_1fr]">
           <div className="relative z-10 flex flex-col justify-center gap-3 p-5 sm:p-6 lg:p-8">
             <h2 className="font-serif text-2xl font-semibold uppercase leading-[1.2] tracking-wide text-secondary-300 sm:text-3xl">
@@ -225,7 +225,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto mb-24 mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="mx-auto mb-24 mt-24 max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="mb-10 flex flex-col items-center justify-between gap-6 sm:flex-row">
           <SectionHeading title="Gallery" align="left" />
           <a

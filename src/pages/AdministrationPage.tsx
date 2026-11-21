@@ -176,7 +176,7 @@ export default function AdministrationPage() {
         image={HERO_IMAGE}
       />
 
-      <main className="mx-auto max-w-7xl space-y-14 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
+      <main className="mx-auto max-w-[1400px] space-y-14 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <section aria-labelledby="committee-title" className="space-y-8">
           <div className="flex items-center gap-4">
             <span className="hidden h-px flex-1 bg-secondary-400 sm:block" />

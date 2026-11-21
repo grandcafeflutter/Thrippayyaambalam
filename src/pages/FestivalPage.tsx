@@ -19,7 +19,7 @@ export default function FestivalPage() {
         image={HERO_IMAGE}
       />
 
-      <section className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.45fr_1fr] lg:px-8">
+      <section className="mx-auto grid max-w-[1400px] gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.45fr_1fr] lg:px-8">
         <div className="space-y-6">
           {festivalCards.map((festival) => (
             <FestivalCard key={festival.id} festival={festival} />

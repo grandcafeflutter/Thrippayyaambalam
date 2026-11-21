@@ -23,7 +23,7 @@ export default function ContactPage() {
         image={ABOUT_IMAGE}
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
           <div className="space-y-8">
             <div>
@@ -82,7 +82,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1400px] px-4 pb-24 sm:px-6 lg:px-8">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-secondary-600">Find your way</p>

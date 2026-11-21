@@ -29,7 +29,7 @@ export default function GalleryPage() {
         image={HERO_IMAGE}
       />
 
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-8">
         <div className="columns-1 gap-5 sm:columns-2 lg:columns-3">
           {galleryImages.map((image, index) => (
             <button

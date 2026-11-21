@@ -5,7 +5,7 @@ export default function SiteFooter() {
   return (
     <footer className="mt-24 bg-primary-800 text-primary-50">
       <div className="h-1.5 bg-gradient-to-r from-secondary-700 via-secondary-400 to-secondary-700" />
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
+      <div className="mx-auto grid max-w-[1400px] gap-10 px-4 py-14 sm:px-6 md:grid-cols-3 lg:px-8">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-neutral-50 p-1 ring-2 ring-secondary-400">
@@ -51,7 +51,7 @@ export default function SiteFooter() {
       </div>
 
       <div className="border-t border-primary-600">
-        <p className="mx-auto max-w-7xl px-4 py-5 text-center text-xs text-primary-200 sm:px-6 lg:px-8">
+        <p className="mx-auto max-w-[1400px] px-4 py-5 text-center text-xs text-primary-200 sm:px-6 lg:px-8">
           © {new Date().getFullYear()} {TEMPLE_NAME}. All rights reserved.
         </p>
       </div>

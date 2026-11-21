@@ -25,7 +25,7 @@ export default function PoojaPage() {
         image={HERO_IMAGE}
       />
 
-      <section className="mx-auto max-w-7xl space-y-12 px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1400px] space-y-12 px-4 py-20 sm:px-6 lg:px-8">
         <SectionHeading
           eyebrow="Rate List"
           title="Pooja & Offering Rates"

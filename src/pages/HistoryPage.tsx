@@ -38,7 +38,7 @@ export default function HistoryPage() {
         image={ABOUT_IMAGE}
       />
 
-      <section className="mx-auto max-w-7xl space-y-20 px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-[1400px] space-y-20 px-4 py-20 sm:px-6 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr]">
           <div className="space-y-6">
             <SectionHeading title="A Rare Sanctum" align="left" />
