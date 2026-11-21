@@ -36,7 +36,7 @@
   }
 
   .history-wrap { width: min(1200px, calc(100% - 88px)); margin: 0 auto; }
-  .history-article h2 { max-width: 19ch; margin: 0 0 2.375rem; color: var(--history-maroon); font-size: clamp(2.25rem, 4.6vw, 4.1rem); letter-spacing: -0.035em; line-height: 1.08; }
+  .history-article h2 { margin: 0 auto 2.375rem; color: var(--history-maroon); font-family: 'Montserrat', sans-serif; font-size: clamp(1.9rem, 3.5vw, 3rem); font-weight: 600; letter-spacing: -0.035em; line-height: 1.08; text-align: center; }
   .history-grid { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 3.375rem; }
   .history-index { align-self: start; position: sticky; top: 1.5rem; border-top: 2px solid var(--history-maroon); padding-top: 1rem; }
   .history-index h3 { margin: 0; color: var(--history-maroon); font-family: inherit; font-size: 0.875rem; font-weight: 650; }

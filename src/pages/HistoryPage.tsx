@@ -27,7 +27,7 @@ export default function HistoryPage() {
 
       <section className="history-article" aria-labelledby="legend-title">
         <div className="history-wrap">
-          <h2 id="legend-title">The Legend of Sree Thrippayya Thrimoorthy Temple</h2>
+          <h2 id="legend-title"><span className="block">The Legend of</span><span className="block">Sree Thrippayya Thrimoorthy Temple</span></h2>
           <div className="history-grid">
             <nav className="history-index" aria-labelledby="history-index-title">
               <h3 id="history-index-title">On this page</h3>
