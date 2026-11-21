@@ -113,7 +113,7 @@ export default function WorshipPage() {
               </p>
             </div>
             <a
-              href="#/contact"
+              href="/contact"
               className="inline-flex shrink-0 items-center gap-2 rounded-full bg-secondary-500 px-7 py-3.5 text-sm font-semibold text-primary-900 transition hover:bg-secondary-400"
             >
               Contact the Office

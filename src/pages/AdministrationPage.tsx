@@ -152,7 +152,7 @@ function CommitteePanel({ committee }: { committee: Committee }) {
           {committee.malayalam && <p className="text-sm font-medium text-accent-700">{committee.malayalam}</p>}
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {committee.members.map((member) => <MemberCard key={member.name} member={member} />)}
       </div>
     </section>
@@ -204,7 +204,7 @@ export default function AdministrationPage() {
             <h2 id="other-committees-title" className="rounded-full bg-primary-800 px-7 py-3 text-center font-serif text-2xl font-semibold text-neutral-50 shadow-md sm:text-3xl">Other Committees</h2>
             <span className="hidden h-px flex-1 bg-secondary-400 sm:block" />
           </div>
-          <div className="grid gap-6 xl:grid-cols-[1.15fr_1.15fr_0.7fr]">
+          <div className="grid gap-6">
             {otherCommittees.map((committee) => <CommitteePanel key={committee.title} committee={committee} />)}
           </div>
         </section>

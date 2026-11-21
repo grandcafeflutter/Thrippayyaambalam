@@ -38,7 +38,7 @@ export default function ContactPage() {
               <ul className="divide-y divide-secondary-100">
                 {CONTACT_ITEMS.map((item) => (
                   <li key={item.label} className="p-5 transition hover:bg-secondary-50 sm:p-6">
-                    <a href={item.href ?? '#'} className={`flex items-center gap-4 ${item.href ? 'group' : ''}`}>
+                    <a href={item.href ?? '/contact'} className={`flex items-center gap-4 ${item.href ? 'group' : ''}`}>
                       <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary-700 text-secondary-300 shadow-sm transition group-hover:bg-secondary-500 group-hover:text-primary-900">
                         <item.icon className="h-5 w-5" />
                       </span>

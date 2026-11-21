@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PageBanner from '@/components/PageBanner';
 import GalleryLightbox from '@/components/GalleryLightbox';
 import { HERO_IMAGE } from '@/data/temple';
@@ -6,8 +6,19 @@ import { getGalleryImages } from '@/lib/cmsMedia';
 
 export default function GalleryPage() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-  const [galleryImages] = useState(getGalleryImages);
+  const [galleryImages, setGalleryImages] = useState(getGalleryImages);
   const closeLightbox = useCallback(() => setActiveIndex(null), []);
+
+  useEffect(() => {
+    const refreshGallery = (event: Event) => {
+      if ((event as CustomEvent<string>).detail === 'temple-cms-gallery-images') {
+        setGalleryImages(getGalleryImages());
+        setActiveIndex(null);
+      }
+    };
+    window.addEventListener('cms-content-updated', refreshGallery);
+    return () => window.removeEventListener('cms-content-updated', refreshGallery);
+  }, []);
 
   return (
     <>

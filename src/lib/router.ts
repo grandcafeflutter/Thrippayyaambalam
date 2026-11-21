@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 
 function readPath(): string {
-  const hashPath = window.location.hash.replace(/^#/, '');
-  if (hashPath.startsWith('/')) return hashPath;
-
-  // Support direct browser URLs such as /cms in addition to the site's
-  // existing hash URLs (for example, #/history).
   const pathname = window.location.pathname.replace(/\/$/, '') || '/';
-  return pathname.startsWith('/') ? pathname : '/';
+  if (pathname !== '/') return pathname.startsWith('/') ? pathname : '/';
+
+  // Keep old shared hash URLs working while clean links are phased in.
+  const hashPath = window.location.hash.replace(/^#/, '');
+  return hashPath.startsWith('/') ? hashPath : '/';
 }
 
 export function useHashPath(): string {
@@ -16,7 +15,11 @@ export function useHashPath(): string {
   useEffect(() => {
     const handleChange = () => setPath(readPath());
     window.addEventListener('hashchange', handleChange);
-    return () => window.removeEventListener('hashchange', handleChange);
+    window.addEventListener('popstate', handleChange);
+    return () => {
+      window.removeEventListener('hashchange', handleChange);
+      window.removeEventListener('popstate', handleChange);
+    };
   }, []);
 
   return path;

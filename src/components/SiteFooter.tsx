@@ -23,7 +23,7 @@ export default function SiteFooter() {
           <ul className="grid grid-cols-2 gap-x-6 gap-y-2 text-sm">
             {NAV_ITEMS.map((item) => (
               <li key={item.href}>
-                <a href={`#${item.href}`} className="transition-colors hover:text-secondary-300">
+                <a href={item.href} className="transition-colors hover:text-secondary-300">
                   {item.label}
                 </a>
               </li>

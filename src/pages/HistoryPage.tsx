@@ -79,7 +79,7 @@ export default function HistoryPage() {
             <p className="text-primary-50">Join the morning and evening poojas to experience the temple at its most vibrant.</p>
           </div>
           <a
-            href="#/pooja"
+            href="/pooja"
             className="inline-flex items-center gap-2 rounded-full bg-secondary-500 px-6 py-3 text-sm font-semibold text-primary-900 transition hover:bg-secondary-400"
           >
             View poojas

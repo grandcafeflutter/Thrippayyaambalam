@@ -3,15 +3,15 @@ import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, Flame, MapPin, Pause, Pl
 import DarshanTimings from '@/components/DarshanTimings';
 import SectionHeading from '@/components/SectionHeading';
 import {
-  ABOUT_IMAGE,
   ABOUT_TEXT,
   FESTIVALS,
-  GALLERY_IMAGES,
-  ORDER_OF_WORSHIP_IMAGE,
   TEMPLE_NAME,
   WORSHIP_STEPS,
 } from '@/data/temple';
-import { getHomeFestivals, getHomeFestivalsTitle, getHomeHeroImages, getHomeQuickLinkLabels } from '@/lib/cmsMedia';
+import { getGalleryImages, getHomeFestivals, getHomeFestivalsTitle, getHomeHeroImages, getHomeQuickLinkLabels } from '@/lib/cmsMedia';
+
+const ABOUT_SECTION_IMAGE = '/images/Malayalam temple arch and statues.jpg';
+const WORSHIP_SECTION_IMAGE = '/images/Vintage Shrine with Three Deities.jpg';
 
 const QUICK_LINKS = [
   { href: '/pooja', label: 'Daily Pooja', icon: Flame },
@@ -28,6 +28,7 @@ export default function HomePage() {
   const [quickLinkLabels] = useState(getHomeQuickLinkLabels);
   const [festivalContent] = useState(getHomeFestivals);
   const [festivalTitle] = useState(getHomeFestivalsTitle);
+  const [galleryImages] = useState(getGalleryImages);
   const quickLinks = QUICK_LINKS.map((link, index) => ({ ...link, label: quickLinkLabels[index] ?? link.label }));
 
   useEffect(() => {
@@ -72,14 +73,14 @@ export default function HomePage() {
           </p>
           <div className="animate-fade-up mt-8 flex flex-wrap gap-4">
             <a
-              href="#/history"
+              href="/history"
               className="inline-flex items-center gap-2 rounded-full bg-secondary-500 px-6 py-3 text-sm font-semibold text-primary-900 shadow-lg transition hover:bg-secondary-400"
             >
               Discover the temple
               <ArrowRight className="h-4 w-4" />
             </a>
             <a
-              href="#/contact"
+              href="/contact"
               className="inline-flex items-center gap-2 rounded-full border border-neutral-50/60 px-6 py-3 text-sm font-semibold text-neutral-50 transition hover:bg-neutral-50/10"
             >
               Plan your visit
@@ -133,7 +134,7 @@ export default function HomePage() {
           {quickLinks.map((link) => (
             <a
               key={link.label}
-              href={`#${link.href}`}
+              href={link.href}
               className="group flex flex-col items-center gap-3 rounded-xl px-4 py-5 text-center transition duration-300 hover:-translate-y-1 hover:bg-primary-50 hover:shadow-md"
             >
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-50 text-primary-700 ring-1 ring-secondary-300 transition group-hover:bg-primary-700 group-hover:text-secondary-300">
@@ -148,13 +149,13 @@ export default function HomePage() {
       <section className="mx-auto mt-20 max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[1.5fr_0.8fr]">
           <div className="grid overflow-hidden rounded-3xl border border-secondary-200 bg-neutral-50 shadow-md md:grid-cols-[1fr_1.2fr]">
-            <img src={ABOUT_IMAGE} alt="Thrippayya Thrimoorthi Temple" className="h-full min-h-72 w-full object-cover" />
+            <img src={ABOUT_SECTION_IMAGE} alt="Thrippayya Thrimoorthi Temple" className="h-full min-h-72 w-full object-cover" />
             <div className="flex flex-col justify-center gap-5 p-8 sm:p-10">
               <h2 className="text-3xl font-semibold text-primary-700 sm:text-4xl">About the Temple</h2>
               <span className="h-0.5 w-16 rounded-full bg-secondary-500" />
               <p className="text-[15px] leading-[1.5] text-neutral-700">{ABOUT_TEXT}</p>
               <a
-                href="#/history"
+                href="/history"
                 className="inline-flex w-fit items-center gap-2 rounded-full bg-primary-700 px-5 py-2.5 text-sm font-semibold text-neutral-50 transition hover:bg-primary-600"
               >
                 Read More
@@ -203,22 +204,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto mt-24 max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="relative grid overflow-hidden rounded-3xl bg-primary-800 shadow-xl md:grid-cols-[1.1fr_1fr]">
-          <div className="relative z-10 flex flex-col justify-center gap-6 p-8 sm:p-12">
-            <h2 className="font-serif text-3xl font-semibold uppercase leading-[1.2] tracking-wide text-secondary-300 sm:text-4xl">
+      <section className="mx-auto mt-16 max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="relative grid overflow-hidden rounded-2xl bg-primary-800 shadow-xl md:aspect-[3/1] md:grid-cols-[2fr_1fr]">
+          <div className="relative z-10 flex flex-col justify-center gap-3 p-5 sm:p-6 lg:p-8">
+            <h2 className="font-serif text-2xl font-semibold uppercase leading-[1.2] tracking-wide text-secondary-300 sm:text-3xl">
               Order of Worship at {TEMPLE_NAME}
             </h2>
-            <p className="text-[15px] leading-[1.5] text-primary-50">{WORSHIP_STEPS[0].text}</p>
+            <p className="text-sm leading-6 text-primary-50">{WORSHIP_STEPS[0].text}</p>
             <a
-              href="#/worship"
-              className="inline-flex w-fit items-center gap-2 rounded-full bg-secondary-500 px-6 py-3 text-sm font-semibold text-primary-900 transition hover:bg-secondary-400"
+              href="/worship"
+              className="inline-flex w-fit items-center gap-2 rounded-full bg-secondary-500 px-5 py-2.5 text-sm font-semibold text-primary-900 transition hover:bg-secondary-400"
             >
               Read more
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
-          <img src={ORDER_OF_WORSHIP_IMAGE} alt="Temple courtyard with stone pillars" className="h-64 w-full object-cover md:h-full" />
+          <div className="min-h-[11rem] bg-primary-900 md:min-h-0">
+            <img src={WORSHIP_SECTION_IMAGE} alt="Thrippayya Thrimoorthi Temple" className="h-full min-h-[11rem] w-full object-cover object-center md:min-h-0" />
+          </div>
         </div>
       </section>
 
@@ -226,7 +229,7 @@ export default function HomePage() {
         <div className="mb-10 flex flex-col items-center justify-between gap-6 sm:flex-row">
           <SectionHeading title="Gallery" align="left" />
           <a
-            href="#/gallery"
+            href="/gallery"
             className="inline-flex items-center gap-2 rounded-full bg-primary-700 px-6 py-3 text-sm font-semibold text-neutral-50 transition hover:bg-primary-600"
           >
             View Gallery
@@ -234,7 +237,7 @@ export default function HomePage() {
           </a>
         </div>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
-          {GALLERY_IMAGES.slice(0, 5).map((image) => (
+          {galleryImages.slice(0, 5).map((image) => (
             <div key={image.src} className="aspect-square overflow-hidden rounded-xl shadow-sm">
               <img
                 src={image.src}

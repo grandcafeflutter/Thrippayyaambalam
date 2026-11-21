@@ -76,5 +76,6 @@ export async function saveCmsContent(key: string, value: unknown): Promise<void>
   if (error) throw error;
   if (typeof window !== 'undefined') {
     window.localStorage.setItem(key, typeof content === 'string' ? content : JSON.stringify(content));
+    window.dispatchEvent(new CustomEvent('cms-content-updated', { detail: key }));
   }
 }

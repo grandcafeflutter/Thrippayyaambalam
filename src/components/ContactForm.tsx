@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from 'react';
 import { CheckCircle2, Loader2, Send } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
 
 type FormValues = {
   name: string;
@@ -12,14 +11,6 @@ type FormValues = {
 type FormStatus = 'idle' | 'submitting' | 'success' | 'error';
 
 const EMPTY_VALUES: FormValues = { name: '', email: '', phone: '', message: '' };
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-function validate(values: FormValues): string | null {
-  if (!values.name.trim()) return 'Please enter your name.';
-  if (!EMAIL_PATTERN.test(values.email.trim())) return 'Please enter a valid email address.';
-  if (!values.message.trim()) return 'Please write a short message.';
-  return null;
-}
 
 const inputClass =
   'w-full rounded-xl border border-neutral-300 bg-neutral-50 px-4 py-3 text-neutral-800 placeholder:text-neutral-400 transition focus:border-primary-600 focus:outline-none focus:ring-2 focus:ring-secondary-400/60';
@@ -33,39 +24,22 @@ export default function ContactForm() {
     setValues((current) => ({ ...current, [field]: event.target.value }));
   };
 
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const validationError = validate(values);
-    if (validationError) {
-      setErrorMessage(validationError);
-      setStatus('error');
-      return;
-    }
-
     setStatus('submitting');
     setErrorMessage(null);
 
-    if (!supabase) {
-      setErrorMessage('Online messages are temporarily unavailable. Please contact the temple office directly.');
-      setStatus('error');
-      return;
-    }
+    const whatsappMessage = [
+      'Hello Thrippayya Thrimoorthi Temple,',
+      '',
+      `Name: ${values.name.trim()}`,
+      `Email: ${values.email.trim()}`,
+      `Phone: ${values.phone.trim() || 'Not provided'}`,
+      '',
+      `Message: ${values.message.trim()}`,
+    ].join('\n');
 
-    const { error } = await supabase.from('contact_messages').insert({
-      name: values.name.trim(),
-      email: values.email.trim(),
-      phone: values.phone.trim() || null,
-      message: values.message.trim(),
-    });
-
-    if (error) {
-      setErrorMessage('Your message could not be sent. Please try again in a moment.');
-      setStatus('error');
-      return;
-    }
-
-    setValues(EMPTY_VALUES);
-    setStatus('success');
+    window.location.assign(`https://wa.me/?text=${encodeURIComponent(whatsappMessage)}`);
   };
 
   if (status === 'success') {

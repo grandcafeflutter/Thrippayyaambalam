@@ -59,7 +59,7 @@ type QuickLinksForm = string[];
 
 const CMS_EMAIL = 'grandcafeadvertising@gmail.com';
 
-function compressHeroImage(file: File): Promise<string> {
+function compressImage(file: File): Promise<string> {
   if (!file.type.startsWith('image/')) return Promise.reject(new Error('Choose a valid image file.'));
   if (file.size > 20 * 1024 * 1024) return Promise.reject(new Error('Choose an image smaller than 20 MB.'));
 
@@ -199,6 +199,7 @@ export default function CmsDashboardPage() {
   const [saved, setSaved] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [heroUploadsPending, setHeroUploadsPending] = useState(0);
+  const [galleryUploadsPending, setGalleryUploadsPending] = useState(0);
   const [heroImages, setHeroImages] = useState<CmsHeroImage[]>(getHomeHeroImages);
   const [heroForm, setHeroForm] = useState<HeroForm>({
     eyebrow: 'WELCOME TO',
@@ -248,6 +249,10 @@ export default function CmsDashboardPage() {
   const saveSection = async () => {
     if (!selectedSection) return;
     if (selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0) {
+      setSaveError('Wait for image processing to finish before saving.');
+      return;
+    }
+    if (selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images' && galleryUploadsPending > 0) {
       setSaveError('Wait for image processing to finish before saving.');
       return;
     }
@@ -301,6 +306,7 @@ export default function CmsDashboardPage() {
       ? page
       : { ...page, sections: page.sections.map((section) => section.id === selectedSection.id ? { ...selectedSection, updated: 'Just now' } : section) }));
     setSaved(true);
+    setSelectedSection(null);
     window.setTimeout(() => setSaved(false), 2400);
   };
 
@@ -310,7 +316,7 @@ export default function CmsDashboardPage() {
     event.target.value = '';
     setSaveError('');
     setHeroUploadsPending((count) => count + 1);
-    void compressHeroImage(file).then((src) => setHeroImages((current) => [...current, {
+    void compressImage(file).then((src) => setHeroImages((current) => [...current, {
       src,
       alt: file.name.replace(/\.[^/.]+$/, '') || 'Temple hero image',
     }])).catch((error: unknown) => setSaveError(error instanceof Error ? error.message : 'The selected image could not be processed.'))
@@ -323,7 +329,7 @@ export default function CmsDashboardPage() {
     event.target.value = '';
     setSaveError('');
     setHeroUploadsPending((count) => count + 1);
-    void compressHeroImage(file).then((src) => setHeroImages((current) => current.map((image, currentIndex) => (
+    void compressImage(file).then((src) => setHeroImages((current) => current.map((image, currentIndex) => (
       currentIndex === index ? { ...image, src } : image
     )))).catch((error: unknown) => setSaveError(error instanceof Error ? error.message : 'The selected image could not be processed.'))
       .finally(() => setHeroUploadsPending((count) => Math.max(0, count - 1)));
@@ -416,11 +422,15 @@ export default function CmsDashboardPage() {
 
   const handleGalleryUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = () => setGalleryForm((current) => [...current, { src: String(reader.result), alt: file.name.replace(/\.[^/.]+$/, ''), caption: file.name.replace(/\.[^/.]+$/, '') }]);
-    reader.readAsDataURL(file);
+    if (!file) return;
     event.target.value = '';
+    setSaveError('');
+    const label = file.name.replace(/\.[^/.]+$/, '') || 'Temple gallery image';
+    setGalleryUploadsPending((count) => count + 1);
+    void compressImage(file)
+      .then((src) => setGalleryForm((current) => [...current, { src, alt: label, caption: label }]))
+      .catch((error: unknown) => setSaveError(error instanceof Error ? error.message : 'The selected image could not be processed.'))
+      .finally(() => setGalleryUploadsPending((count) => Math.max(0, count - 1)));
   };
 
   const removeGalleryImage = (index: number) => {
@@ -474,7 +484,7 @@ export default function CmsDashboardPage() {
             {loginError && <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">{loginError}</p>}
             <button type="submit" className="w-full rounded-xl bg-primary-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800">{loginLinkSent ? 'Resend login link' : 'Send login link'}</button>
           </form>
-          <a href="#/" className="mt-6 block text-center text-sm font-semibold text-slate-500 hover:text-primary-700">Return to website</a>
+          <a href="/" className="mt-6 block text-center text-sm font-semibold text-slate-500 hover:text-primary-700">Return to website</a>
         </div>
       </div>
     );
@@ -497,7 +507,7 @@ export default function CmsDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-4">
-            <a href="#/" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:inline-flex">
+            <a href="/" className="hidden items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 sm:inline-flex">
               <Eye className="h-4 w-4" /> View website
             </a>
             <div className="hidden h-7 w-px bg-slate-200 sm:block" />
@@ -536,7 +546,7 @@ export default function CmsDashboardPage() {
             <Globe2 className="mb-3 h-5 w-5 text-secondary-300" />
             <p className="text-sm font-bold">Live website</p>
             <p className="mt-1 text-xs leading-5 text-slate-300">Your latest published content is visible to visitors.</p>
-            <a href="#/" className="mt-3 inline-flex text-xs font-bold text-secondary-300 hover:text-secondary-200">Open website <ArrowLeft className="ml-1 h-3.5 w-3.5 rotate-180" /></a>
+            <a href="/" className="mt-3 inline-flex text-xs font-bold text-secondary-300 hover:text-secondary-200">Open website <ArrowLeft className="ml-1 h-3.5 w-3.5 rotate-180" /></a>
           </div>
         </aside>
 
@@ -547,7 +557,7 @@ export default function CmsDashboardPage() {
               <h1 className="mt-1 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Manage {selectedPage.name}</h1>
               <p className="mt-2 text-sm text-slate-500">Update the content sections shown on <span className="font-semibold text-slate-700">{selectedPage.path}</span></p>
             </div>
-            <a href={`#${selectedPage.path}`} className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"><Eye className="h-4 w-4" /> Preview page</a>
+            <a href={selectedPage.path} className="inline-flex w-fit items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50"><Eye className="h-4 w-4" /> Preview page</a>
           </div>
 
           <div className="mb-7 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
@@ -587,7 +597,7 @@ export default function CmsDashboardPage() {
               {saveError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{saveError}</p>}
               {selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images' ? (
                 <div className="space-y-5">
-                  <div className="flex flex-col justify-between gap-3 rounded-xl bg-slate-50 p-4 sm:flex-row sm:items-center"><div><p className="text-sm font-bold text-slate-700">Gallery images</p><p className="mt-1 text-xs leading-5 text-slate-500">Upload new images or delete images from the public gallery.</p></div><label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary-700 px-3 py-2 text-xs font-bold text-white hover:bg-primary-800"><Upload className="h-4 w-4" /> Upload new image<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleGalleryUpload} className="sr-only" /></label></div>
+                  <div className="flex flex-col justify-between gap-3 rounded-xl bg-slate-50 p-4 sm:flex-row sm:items-center"><div><p className="text-sm font-bold text-slate-700">Gallery images</p><p className="mt-1 text-xs leading-5 text-slate-500">Upload new images or delete images from the public gallery.{galleryUploadsPending > 0 && <span role="status" className="ml-1 font-semibold text-primary-700">Processing image...</span>}</p></div><label className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary-700 px-3 py-2 text-xs font-bold text-white hover:bg-primary-800"><Upload className="h-4 w-4" /> Upload new image<input type="file" accept="image/png,image/jpeg,image/webp" onChange={handleGalleryUpload} className="sr-only" /></label></div>
                   {galleryForm.length === 0 ? <div className="rounded-2xl border border-dashed border-slate-300 p-8 text-center text-sm text-slate-500">No gallery images. Upload an image to get started.</div> : <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{galleryForm.map((image, index) => <div key={`${image.src}-${index}`} className="overflow-hidden rounded-2xl border border-slate-200 bg-white"><div className="relative"><img src={image.src} alt={image.alt} className="h-36 w-full object-cover" /><button type="button" onClick={() => removeGalleryImage(index)} className="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate-900/80 text-white hover:bg-red-600" aria-label={`Delete ${image.caption}`}><Trash2 className="h-4 w-4" /></button></div><div className="space-y-3 p-3"><label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">Alt text</span><input value={image.alt} onChange={(event) => updateGalleryImage(index, 'alt', event.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" /></label><label className="block"><span className="mb-1.5 block text-xs font-bold uppercase tracking-wide text-slate-500">Caption</span><input value={image.caption} onChange={(event) => updateGalleryImage(index, 'caption', event.target.value)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100" /></label></div></div>)}</div>}
                 </div>
               ) : selectedPage.id === 'festival' && selectedSection.id === 'festival-cards' ? (
@@ -739,12 +749,12 @@ export default function CmsDashboardPage() {
               )}
               <div className="rounded-xl bg-slate-50 p-4"><p className="text-xs font-bold text-slate-500">Publishing status</p><p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-800"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> {selectedSection.status} on the live website</p></div>
             </div>
-            <div className="flex flex-col-reverse gap-3 border-t border-slate-100 px-6 py-5 sm:flex-row sm:justify-end"><button type="button" onClick={() => setSelectedSection(null)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</button><button type="button" onClick={saveSection} disabled={selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50"><Save className="h-4 w-4" /> Save changes</button></div>
+              <div className="flex flex-col-reverse gap-3 border-t border-slate-100 px-6 py-5 sm:flex-row sm:justify-end"><button type="button" onClick={() => setSelectedSection(null)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</button><button type="button" onClick={saveSection} disabled={(selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0) || (selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images' && galleryUploadsPending > 0)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50"><Save className="h-4 w-4" /> Save changes</button></div>
           </div>
         </div>
       )}
 
-      {saved && <div className="fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-xl"><Check className="h-4 w-4 text-emerald-400" /> Changes saved</div>}
+      {saved && <div role="status" className="fixed bottom-5 right-5 z-[60] flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-xl"><Check className="h-4 w-4" /> Changes saved</div>}
     </div>
   );
 }
