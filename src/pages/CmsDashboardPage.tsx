@@ -12,6 +12,7 @@ import {
   Image,
   LayoutDashboard,
   LockKeyhole,
+  Loader2,
   LogOut,
   Menu,
   MoreHorizontal,
@@ -197,6 +198,7 @@ export default function CmsDashboardPage() {
   const [search, setSearch] = useState('');
   const [mobilePagesOpen, setMobilePagesOpen] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [heroUploadsPending, setHeroUploadsPending] = useState(0);
   const [galleryUploadsPending, setGalleryUploadsPending] = useState(0);
@@ -247,7 +249,7 @@ export default function CmsDashboardPage() {
   };
 
   const saveSection = async () => {
-    if (!selectedSection) return;
+    if (!selectedSection || isSaving) return;
     if (selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0) {
       setSaveError('Wait for image processing to finish before saving.');
       return;
@@ -257,6 +259,7 @@ export default function CmsDashboardPage() {
       return;
     }
     setSaveError('');
+    setIsSaving(true);
     try {
       if (selectedPage.id === 'home' && selectedSection.id === 'hero-section') {
         const legacyHeroImage = window.localStorage.getItem(HOME_HERO_IMAGE_KEY);
@@ -299,12 +302,14 @@ export default function CmsDashboardPage() {
       setSaveError(error instanceof DOMException && error.name === 'QuotaExceededError'
         ? 'Browser storage is full. Remove an image or use smaller images, then try saving again.'
         : 'Could not save these changes. Please try again.');
+      setIsSaving(false);
       return;
     }
 
     setPages((current) => current.map((page) => page.id !== selectedPage.id
       ? page
       : { ...page, sections: page.sections.map((section) => section.id === selectedSection.id ? { ...selectedSection, updated: 'Just now' } : section) }));
+    setIsSaving(false);
     setSaved(true);
     setSelectedSection(null);
     window.setTimeout(() => setSaved(false), 2400);
@@ -592,8 +597,9 @@ export default function CmsDashboardPage() {
       {selectedSection && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/40 p-0 backdrop-blur-[2px] sm:items-center sm:p-6" role="dialog" aria-modal="true" aria-label={`Update ${selectedSection.title}`}>
           <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:rounded-3xl">
-            <div className="flex items-start justify-between border-b border-slate-100 px-6 py-5"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary-700">Update section</p><h2 className="mt-1 font-serif text-2xl font-bold text-slate-900">{selectedSection.title}</h2></div><button type="button" onClick={() => setSelectedSection(null)} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100" aria-label="Close editor"><X className="h-5 w-5" /></button></div>
+            <div className="flex items-start justify-between border-b border-slate-100 px-6 py-5"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary-700">Update section</p><h2 className="mt-1 font-serif text-2xl font-bold text-slate-900">{selectedSection.title}</h2></div><button type="button" onClick={() => setSelectedSection(null)} disabled={isSaving} className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Close editor"><X className="h-5 w-5" /></button></div>
             <div className="space-y-5 px-6 py-6">
+              {isSaving && <p role="status" className="flex items-center gap-2 rounded-xl border border-primary-200 bg-primary-50 px-4 py-3 text-sm font-semibold text-primary-800"><Loader2 className="h-4 w-4 animate-spin" /> Saving changes… Please wait.</p>}
               {saveError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{saveError}</p>}
               {selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images' ? (
                 <div className="space-y-5">
@@ -749,7 +755,7 @@ export default function CmsDashboardPage() {
               )}
               <div className="rounded-xl bg-slate-50 p-4"><p className="text-xs font-bold text-slate-500">Publishing status</p><p className="mt-2 flex items-center gap-2 text-sm font-semibold text-slate-800"><CheckCircle2 className="h-4 w-4 text-emerald-500" /> {selectedSection.status} on the live website</p></div>
             </div>
-              <div className="flex flex-col-reverse gap-3 border-t border-slate-100 px-6 py-5 sm:flex-row sm:justify-end"><button type="button" onClick={() => setSelectedSection(null)} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100">Cancel</button><button type="button" onClick={saveSection} disabled={(selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0) || (selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images' && galleryUploadsPending > 0)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50"><Save className="h-4 w-4" /> Save changes</button></div>
+              <div className="flex flex-col-reverse gap-3 border-t border-slate-100 px-6 py-5 sm:flex-row sm:justify-end"><button type="button" onClick={() => setSelectedSection(null)} disabled={isSaving} className="rounded-xl px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40">Cancel</button><button type="button" onClick={saveSection} disabled={isSaving || (selectedPage.id === 'home' && selectedSection.id === 'hero-section' && heroUploadsPending > 0) || (selectedPage.id === 'gallery' && selectedSection.id === 'gallery-images' && galleryUploadsPending > 0)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-primary-800 disabled:cursor-not-allowed disabled:opacity-50">{isSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />} {isSaving ? 'Saving…' : 'Save changes'}</button></div>
           </div>
         </div>
       )}
