@@ -8,7 +8,7 @@ type FestivalCardProps = {
 export default function FestivalCard({ festival }: FestivalCardProps) {
   return (
     <article className="group flex flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-neutral-50 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl sm:flex-row">
-      <div className="h-56 shrink-0 overflow-hidden sm:h-auto sm:w-64">
+      <div className="aspect-square w-full shrink-0 overflow-hidden sm:w-64">
         <img
           src={festival.image}
           alt={festival.imageAlt}
