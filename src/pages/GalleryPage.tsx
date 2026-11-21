@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import PageBanner from '@/components/PageBanner';
 import GalleryLightbox from '@/components/GalleryLightbox';
-import { HERO_IMAGE } from '@/data/temple';
 import { getGalleryImages } from '@/lib/cmsMedia';
+
+const GALLERY_HERO_IMAGE = 'https://coovcplsijznkdytdyqh.supabase.co/storage/v1/object/public/site-media/cms/temple-cms-home-hero-images/2e1a4a7c-60b5-40c4-925f-85f5a49392e3.webp';
 
 export default function GalleryPage() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -26,7 +27,7 @@ export default function GalleryPage() {
         eyebrow="Moments"
         title="Gallery"
         description="Glimpses of the temple's architecture, festivals, rituals and the devotees who gather here."
-        image={HERO_IMAGE}
+        image={GALLERY_HERO_IMAGE}
       />
 
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-8">

@@ -2,6 +2,8 @@ import { ArrowRight, Hand } from 'lucide-react';
 import PageBanner from '@/components/PageBanner';
 import { ORDER_OF_WORSHIP_IMAGE, TEMPLE_NAME, WORSHIP_STEPS } from '@/data/temple';
 
+const WORSHIP_HERO_IMAGE = 'https://coovcplsijznkdytdyqh.supabase.co/storage/v1/object/public/site-media/cms/temple-cms-home-hero-images/2e1a4a7c-60b5-40c4-925f-85f5a49392e3.webp';
+
 const CLOSING_STEPS = WORSHIP_STEPS.slice(14);
 const MAIN_STEPS = WORSHIP_STEPS.slice(0, 14);
 
@@ -12,7 +14,7 @@ export default function WorshipPage() {
         eyebrow="Devotional Path"
         title="Order of Worship"
         description={`The traditional sequence of Darshan at ${TEMPLE_NAME}, followed by devotees as they approach the Trimurti.`}
-        image={ORDER_OF_WORSHIP_IMAGE}
+        image={WORSHIP_HERO_IMAGE}
       />
 
       {/* Intro */}

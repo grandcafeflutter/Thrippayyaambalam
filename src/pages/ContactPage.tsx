@@ -1,7 +1,9 @@
 import { ArrowRight, Clock, ExternalLink, Mail, MapPin, Navigation, Phone } from 'lucide-react';
 import ContactForm from '@/components/ContactForm';
 import PageBanner from '@/components/PageBanner';
-import { ABOUT_IMAGE, TEMPLE_CONTACT } from '@/data/temple';
+import { TEMPLE_CONTACT } from '@/data/temple';
+
+const CONTACT_HERO_IMAGE = 'https://coovcplsijznkdytdyqh.supabase.co/storage/v1/object/public/site-media/cms/temple-cms-home-hero-images/2e1a4a7c-60b5-40c4-925f-85f5a49392e3.webp';
 
 const MAP_QUERY = 'SREE THRIPPAYYA KSHETHRA KSHEMA SAMITHY, P.O. Nadavaramba, Irinjalakuda, Trichur, Kerala 680661';
 const MAP_URL = `https://www.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&output=embed`;
@@ -20,7 +22,7 @@ export default function ContactPage() {
         eyebrow="Get in Touch"
         title="Contact Us"
         description="Plan your visit, enquire about poojas and festivals, or reach the temple office with any question."
-        image={ABOUT_IMAGE}
+        image={CONTACT_HERO_IMAGE}
       />
 
       <section className="mx-auto max-w-[1400px] px-4 py-14 sm:px-6 sm:py-20 lg:px-8">

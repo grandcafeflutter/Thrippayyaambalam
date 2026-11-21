@@ -2,7 +2,8 @@
 import { Crown, FileText, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 import PageBanner from '@/components/PageBanner';
-import { HERO_IMAGE } from '@/data/temple';
+
+const ADMINISTRATION_HERO_IMAGE = 'https://coovcplsijznkdytdyqh.supabase.co/storage/v1/object/public/site-media/cms/temple-cms-home-hero-images/2e1a4a7c-60b5-40c4-925f-85f5a49392e3.webp';
 
 export type Member = {
   name: string;
@@ -173,7 +174,7 @@ export default function AdministrationPage() {
         eyebrow="Temple Committee"
         title="Administration"
         description="Management committees of Thrippayya Thrimoorthi Temple."
-        image={HERO_IMAGE}
+        image={ADMINISTRATION_HERO_IMAGE}
       />
 
       <main className="mx-auto max-w-[1400px] space-y-14 px-4 py-12 sm:px-6 sm:py-16 lg:px-8">

@@ -4,7 +4,8 @@ import PageBanner from '@/components/PageBanner';
 import PoojaRateTable from '@/components/PoojaRateTable';
 import SectionHeading from '@/components/SectionHeading';
 import { getPoojaRates } from '@/lib/cmsMedia';
-import { HERO_IMAGE } from '@/data/temple';
+
+const POOJA_HERO_IMAGE = 'https://coovcplsijznkdytdyqh.supabase.co/storage/v1/object/public/site-media/cms/temple-cms-home-hero-images/2e1a4a7c-60b5-40c4-925f-85f5a49392e3.webp';
 
 const NOTICES = [
   'Monday, Saturday and Pradosham are special days for offerings.',
@@ -22,7 +23,7 @@ export default function PoojaPage() {
         eyebrow="Sevas & Poojas"
         title="Pooja & Offerings"
         description="List of poojas and offerings at the temple, with the current rate for each."
-        image={HERO_IMAGE}
+        image={POOJA_HERO_IMAGE}
       />
 
       <section className="mx-auto max-w-[1400px] space-y-12 px-4 py-20 sm:px-6 lg:px-8">

@@ -10,7 +10,7 @@ import {
 } from '@/data/temple';
 import { getGalleryImages, getHomeFestivals, getHomeFestivalsTitle, getHomeHeroImages, getHomeQuickLinkLabels } from '@/lib/cmsMedia';
 
-const ABOUT_SECTION_IMAGE = '/images/Malayalam temple arch and statues.jpg';
+const ABOUT_SECTION_IMAGE = '/thrippayya-thrimoorthy.jpeg';
 const WORSHIP_SECTION_IMAGE = '/images/Vintage Shrine with Three Deities.jpg';
 
 const QUICK_LINKS = [
